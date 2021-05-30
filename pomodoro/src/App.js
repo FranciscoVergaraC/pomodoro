@@ -2,20 +2,32 @@ import logo from './logo.svg';
 import './App.css';
 import Todolist from './Components/Todolist/todolist';
 import CountDownTimer from './Components/Timer/timer';
+import React from 'react';
 
-function App() {
+class App extends React.Component {
 
-  const hoursMinSecs = {hours:0, minutes: 0, seconds: 20}
+  constructor(props){
+    super(props);
+    this.state = {
+      start: false,
+      hoursMinSecs: {hours:0, minutes:0, seconds:20}
+    }
+    };
 
-  return (
+  render (){
+    return(
     <div className="App">
       <header className="App-header">
-        <CountDownTimer hoursMinSecs={hoursMinSecs}/>
+        {this.state.start == true && <CountDownTimer hoursMinSecs={this.state.hoursMinSecs}/>
+        }
+
         <p>Welcome to Pomodoro</p>
         <Todolist/>
       </header>
     </div>
-  );
+  )  
+  }
+  
 }
 
 export default App;
