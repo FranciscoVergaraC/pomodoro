@@ -1,6 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './todolist.css';
-import CountDownTimer from '../Timer/timer';
+import { CountdownCircleTimer } from 'react-countdown-circle-timer'
+
+/* Quiero poder reiniciar el timer, pero la libreria que estoy usando usa react hooks, que era algo que tarde o termprano
+iba a tener que aprender, los siguientes pasos estan aca: https://es.reactjs.org/docs/hooks-overview.html */
+
+const children = ({ remainingTime }) => {
+    const hours = Math.floor(remainingTime / 3600)
+    const minutes = Math.floor((remainingTime % 3600) / 60)
+    const seconds = remainingTime % 60
+    if (remainingTime === 0) {
+        return <div className="timer">End of Period</div>;
+      }
+    return `${hours}:${minutes}:${seconds}`
+  }
 
 class Todolist extends React.Component {
 
@@ -9,35 +22,34 @@ class Todolist extends React.Component {
         this.state = {
             etiqueta: '',
             trabajoRealizado: [],
-            hoursMinSecs: {hours:0, minutes:25, seconds:0},
-            start: false
+            hoursMinSecs: {hours:0, minutes:0, seconds:0},
+            start: false,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleMinuteChange = this.handleMinuteChange.bind(this);
     }
 
+    
+
     handleSubmit(event){
         event.preventDefault();
         let temporal = this.state.trabajoRealizado;
-        console.log(temporal);
-        temporal.push(this.state.etiqueta);
-        console.log(temporal);
         this.setState(
-        {
-            start: true,
-        }
+            {
+                start: true
+            }
         );
         if(this.state.etiqueta !== ''){
             console.log("Se detecta se agrego algo")
+            temporal.push(this.state.etiqueta);
             console.log(this.state.etiqueta !== '')
             this.setState(
                 {
                     trabajoRealizado: temporal,
                 })
         };
-        console.log(this.state.etiqueta !== '')
-        console.log(this.state.trabajoRealizado === [""])
+        console.log("Se detecta un submit")
     }
 
     handleInputChange(event) {
@@ -57,7 +69,7 @@ class Todolist extends React.Component {
             case "25":
                 console.log("entramos al caso 25")
                 this.setState({
-                    hoursMinSecs: {hours:0, minutes:25, seconds:0}
+                    hoursMinSecs: {hours:0, minutes:0, seconds:10}
                 })
             break;
             case "45":
@@ -88,11 +100,28 @@ class Todolist extends React.Component {
                         <option value="45">45</option>
                         <option value="60">60</option>
                     </select><br/>
-                        <input type="submit" value="Comenzar" onClick={this.handleSubmit.bind(this)} />
+                        <input type="submit" value="Comenzar" onClick={this.handleSubmit} />
                 </form>
-                {this.state.start == true && <CountDownTimer hoursMinSecs={this.state.hoursMinSecs}/>
+                {this.state.start == true && 
+                    <div>
+                        <CountdownCircleTimer
+                                isPlaying
+                                duration={parseInt(this.state.hoursMinSecs.seconds)+parseInt(this.state.hoursMinSecs.minutes)*60+parseInt(this.state.hoursMinSecs.hours)*60*60}
+                                colors={[
+                                ['#3399ff', 0.33],
+                                ['#F7B801', 0.33],
+                                ['#A30000', 0],
+                                ]}
+                                >
+                                {children}
+                        </CountdownCircleTimer>
+                    </div>
                 }
-                {this.state.trabajoRealizado === [""] &&
+
+
+
+                <p>Trabajo realizado:</p>
+                {this.state.trabajoRealizado != [""] &&
                     <ul>
                         {this.state.trabajoRealizado.map(string => 
                         <li>{string}</li>

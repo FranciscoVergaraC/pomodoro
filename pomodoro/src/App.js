@@ -18,9 +18,6 @@ class App extends React.Component {
     return(
     <div className="App">
       <header className="App-header">
-        {this.state.start == true && <CountDownTimer hoursMinSecs={this.state.hoursMinSecs}/>
-        }
-
         <p>Welcome to Pomodoro</p>
         <Todolist/>
       </header>
