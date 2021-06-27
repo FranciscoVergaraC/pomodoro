@@ -1,41 +1,49 @@
-import React from 'react'
+import React, { useCallback } from 'react'
+import Timer from 'react-compound-timer'
+import './timer.css'
 
-const CountDownTimer = ({hoursMinSecs}) => {
-   
-    const { hours = 0, minutes = 0, seconds = 60 } = hoursMinSecs;
-    const [[hrs, mins, secs], setTime] = React.useState([hours, minutes, seconds]);
-    
+/* Se importo por npm el siguiente package: https://www.npmjs.com/package/react-compound-timer*/
 
-    const tick = () => {
-   
-        if (hrs === 0 && mins === 0 && secs === 0) 
-            reset()
-        else if (mins === 0 && secs === 0) {
-            setTime([hrs - 1, 59, 59]);
-        } else if (secs === 0) {
-            setTime([hrs, mins - 1, 59]);
-        } else {
-            setTime([hrs, mins, secs - 1]);
-        }
-    };
+class PomodoroTimer extends React.Component {
 
+    render (){
 
-    const reset = () => setTime([parseInt(hours), parseInt(minutes), parseInt(seconds)]);
+        console.log(this.props.time);
 
-    
-    React.useEffect(() => {
-        const timerId = setInterval(() => tick(), 1000);
-        return () => clearInterval(timerId);
-    });
-
-    
-    return (
-        <div>
-            <p>{`${hrs.toString().padStart(2, '0')}:${mins
-            .toString()
-            .padStart(2, '0')}:${secs.toString().padStart(2, '0')}`}</p> 
-        </div>
-    );
+        return (
+                <div>
+                <Timer 
+                    initialTime={this.props.time}
+                    startImmediately={false} 
+                    direction="backward"
+                    checkpoints = {[
+                        {
+                            time: 1,
+                            callback: ()=>this.props.updateComplete()
+                        }
+                    ]} 
+                >
+                    {({ start, resume, pause, stop, reset, timerState }) => (
+                        <React.Fragment>
+                            <div className="Timero" >
+                                <Timer.Hours />: 
+                                <Timer.Minutes />:
+                                <Timer.Seconds />
+                            </div>
+                            <div>
+                                <button onClick={start} >Start</button>
+                                <button onClick={pause}>Pause</button>
+                                <button onClick={resume}>Resume</button>
+                                <button onClick={stop}>Stop</button>
+                                <button onClick={reset}>Reset</button>
+                            </div>
+                        </React.Fragment>
+                    )}
+                </Timer>
+                </div>  
+        )
+    }
 }
 
-export default CountDownTimer;
+
+export default PomodoroTimer;
