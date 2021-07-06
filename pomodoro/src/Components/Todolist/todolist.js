@@ -2,14 +2,15 @@ import React from 'react';
 import './todolist.css';
 import PomodoroTimer from '../Timer/timer'
 import audio from './alarm2.mp3'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-/*La logica de asignar tareas y tiempos esta ok, en trabajo realizado ya se guarda la tarea y el tiempo que se invirtio,
-ahora hay que trabajar en las siguientes tareas pendientes:
-1.- Crear una tabla con los trabajos realizados y la sumatoria de tiempo trabajado // OK
-2.- Mejorar la presentacion grafica // Se centro lo basico , se entiende un poco mas, pero hay harto que mejorar
-3.- Agregar un trigger cuando se acaba el tiempo, que permita:
-    a) Agregar el trabajo como realizado
-    b) Emitir un sonido
+
+/*
+    Para mejora un poco la interfaz grafica se comenzaron a agregar elementos de bootstrap. 
+    Pendientes:
+    1.- Aprender a editar el CSS de un bootstrap. 
 */
 
 class Todolist extends React.Component {
@@ -22,6 +23,7 @@ class Todolist extends React.Component {
             hoursMinSecs: 25*60*1000,
             complete: false,
             displayMenu: false,
+            show: false
         }
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleMinuteChange = this.handleMinuteChange.bind(this);
@@ -29,8 +31,21 @@ class Todolist extends React.Component {
         this.updateComplete = this.updateComplete.bind(this);
         this.openMenu = this.openMenu.bind(this);
         this.sound = this.sound.bind(this);
+        this.handleClose = this.handleClose.bind(this);
+        this.handleShow = this.handleShow.bind(this);
     }
 
+    handleClose(){
+        this.setState({
+            show: false
+        })
+    };
+
+    handleShow(){
+        this.setState({
+            show: true
+        })
+    };
 
     updateComplete(){
         this.sound();
@@ -126,27 +141,55 @@ class Todolist extends React.Component {
             console.log(tiempoTotalTrabajado.reduce((a,b) => a+b));
         }
 
-
-        return (
-            <div className="base">
-                <div className="header">
-                    <span>Pomodoro</span>
-                    <button onClick={this.openMenu}>Settings</button>
-                </div><br></br>
-                {   this.state.displayMenu === true &&
-                    <div id="myModal" className="modal">
+/*                    <div id="myModal" className="modal">
                             <div className="modal-content">
                                 <button onClick={this.openMenu}>x</button>
                                 <br></br>
-                                <label>Tiempo del Pomodoro</label>
+                        </div>
+                    </div>
+*/
+
+        return (
+            <div className="base">
+                  <style type="text/css">
+                    {`
+                    .btn-flat {
+                    background-color:  rgb(236, 112, 108);
+                    color: white;
+                    }
+                    `}
+                </style>
+                <div className="header">
+                    <span>Pomodoro</span>
+                    <Button variant="flat" onClick={this.handleShow}>
+                    Settings
+                    </Button>
+                </div><br></br>
+
+                <Modal
+                    show={this.state.show}
+                    onHide={this.handleClose}
+                    backdrop="static"
+                    keyboard={false}
+                >
+                    <Modal.Header>
+                        <Modal.Title>Settings</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                    <label>Tiempo del Pomodoro </label>
                                 <select name="hoursMinSecs" onChange={this.handleMinuteChange}>
                                     <option value="25">25</option>
                                     <option value="45">45</option>
                                     <option value="60">60</option>
                                 </select><br/>
-                        </div>
-                    </div>
-                }
+                    </Modal.Body>
+                    <Modal.Footer>
+                    <Button variant="secondary" onClick={this.handleClose}>
+                        Close
+                    </Button>
+                    </Modal.Footer>
+                </Modal>
+
                 <div className="mainTimer">
                     <button value="25" onClick={this.handleMinuteChange}>Pomodoro</button>
                     <button value="5" onClick={this.handleMinuteChange}>Short Break</button>

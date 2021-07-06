@@ -16,19 +16,20 @@ class PomodoroTimer extends React.Component {
                     initialTime={this.props.time}
                     startImmediately={false} 
                     direction="backward"
+                    lastUnit="m"
                     checkpoints = {[
                         {
                             time: 1,
                             callback: ()=>this.props.updateComplete()
                         }
                     ]} 
+                    
                 >
                     {({ start, resume, pause, stop, reset, timerState }) => (
                         <React.Fragment>
                             <div className="Timero" >
-                                <Timer.Hours />: 
-                                <Timer.Minutes />:
-                                <Timer.Seconds />
+                                <Timer.Minutes formatValue={(value) => `${(value < 10 ? `0${value}` : value)}`} />:
+                                <Timer.Seconds formatValue={(value) => `${(value < 10 ? `0${value}` : value)}`} />
                             </div>
                             <div>
                                 <button onClick={start} >Start</button>
