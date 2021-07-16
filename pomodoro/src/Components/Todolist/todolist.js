@@ -5,6 +5,7 @@ import audio from './alarm2.mp3'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import promodoro from './pomodoro.svg'
 
 
 /*
@@ -160,7 +161,7 @@ class Todolist extends React.Component {
                     `}
                 </style>
                 <div className="header">
-                    <span>Pomodoro</span>
+                    <img height={35} src={promodoro} />
                     <Button variant="flat" onClick={this.handleShow}>
                     Settings
                     </Button>
